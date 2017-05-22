@@ -9,10 +9,10 @@ const isDev = NODE_ENV === 'development';
 
 gulp.task('sass', () => {
   const outputStyle = isDev ? 'expanded' : 'compressed';
-  return gulp.src('./src/styles/**/*.scss')
+  return gulp.src('./src/style/**/*.scss')
     .pipe(sass({outputStyle}).on('error', sass.logError))
     .pipe(concat('index.css'))
-    .pipe(gulp.dest('./public/css'));
+    .pipe(gulp.dest('./public/style'));
 });
 
 gulp.task('pug', () => {
@@ -23,9 +23,15 @@ gulp.task('pug', () => {
     .pipe(gulp.dest('./public'));
 });
 
-gulp.task('build', ['sass', 'pug']);
+gulp.task('vendor', () => {
+  return gulp.src('./vendor/**/*.*')
+    .pipe(gulp.dest('./public/vendor'))
+});
 
-gulp.task('watch', ['sass', 'pug'], () => {
+gulp.task('build', ['sass', 'pug', 'vendor']);
+
+gulp.task('watch', ['sass', 'pug', 'vendor'], () => {
   gulp.watch('./src/**/*.pug', ['pug']);
-  gulp.watch('./src/styles/**/*.scss', ['sass']);
+  gulp.watch('./src/style/**/*.scss', ['sass']);
+  gulp.watch('./vendor/**/*.*', ['vendor']);
 });
